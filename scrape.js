@@ -28,17 +28,23 @@ app.post('/scrape', async (req, res) => {
     await page.goto(url);
     await page.waitForTimeout(1000);
 
+    const content = await page.content();
     const harData = await har.stop();
     await browser.close();
+
+    const encodedContent = Buffer.from(content).toString('base64');
 
     const networkMap = analyzeNetworkRelationships(harData);
     const headersInfo = analyzeResponseHeaders(harData);
     const performanceMetrics = summarizePerformance(harData);
 
+    
+
     const responseData = {
       networkMap,
       headersInfo,
-      performanceMetrics
+      performanceMetrics,
+      pageContent: encodedContent
     };
 
     res.status(200).json(responseData);

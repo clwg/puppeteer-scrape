@@ -1,6 +1,6 @@
 # puppeteer-scrape
 
-This is a headless web scraping service built with Node.js, Express, and Puppeteer. It provides an API endpoint to scrape a given URL and analyze the network relationships, response headers, and performance metrics of the page.
+This is a headless web scraping service built with Node.js, Express, and Puppeteer. It provides an API endpoint to scrape a given URL and analyze the network relationships, response headers, and performance metrics of the page as well as the base64 content of the page.
 
 ## Installation
 
@@ -33,4 +33,4 @@ If an error occurs during scraping, the server will respond with a 500 status co
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the AGPL License.
