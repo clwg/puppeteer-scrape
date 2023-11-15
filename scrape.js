@@ -44,7 +44,7 @@ app.post('/scrape', async (req, res) => {
       networkMap,
       headersInfo,
       performanceMetrics,
-      pageContent: encodedContent
+      content: encodedContent
     };
 
     res.status(200).json(responseData);
