@@ -9,7 +9,7 @@ const port = 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/scrape', async (req, res) => {
+app.post('/detailed_scrape', async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
@@ -28,6 +28,7 @@ app.post('/scrape', async (req, res) => {
     await page.goto(url);
     await page.waitForTimeout(1000);
 
+    const renderedContent = await page.evaluate(() => document.body.innerText);
     const content = await page.content();
     const harData = await har.stop();
     await browser.close();
@@ -44,6 +45,7 @@ app.post('/scrape', async (req, res) => {
       networkMap,
       headersInfo,
       performanceMetrics,
+      renderedContent: renderedContent,
       content: encodedContent
     };
 
@@ -151,3 +153,31 @@ function summarizePerformance(harData) {
   
     return performanceMetrics;
 }
+
+
+app.post('/simple_scrape', async (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).send('URL is required');
+  }
+
+  try {
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    const page = await browser.newPage();
+    await page.goto(url);
+    await page.waitForTimeout(1000);
+
+    const renderedContent = await page.evaluate(() => document.body.innerText.replace(/\n/g, ' '));
+    await browser.close();
+
+    res.status(200).json({ renderedContent });
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).send('An error occurred during scraping');
+  }
+});

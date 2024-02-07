@@ -16,7 +16,9 @@ The service provides a POST endpoint at `/scrape` that accepts a JSON body with 
 Example request:
 
 ```sh
-curl -X POST http://localhost:3000/scrape -H 'Content-Type: application/json' -d '{"url": "https://www.example.com"}'
+curl -X POST http://localhost:3000/detailed_scrape -H 'Content-Type: application/json' -d '{"url": "https://www.example.com"}'
+curl -X POST http://localhost:3000/simple_scrape -H 'Content-Type: application/json' -d '{"url": "https://www.example.com"}'
+
 ```
 
 The response will be a JSON object containing the following fields:
