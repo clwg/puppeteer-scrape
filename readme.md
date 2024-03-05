@@ -9,7 +9,7 @@ This is a headless web scraping service built with Node.js, Express, and Puppete
 
 ## Usage
 
-Start the server by running `docker run --rm -p 3000:3000 puppeteer-scrape`. The server will start on port 3000.
+Start the server by running `docker run -it --rm -p 3000:3000 puppeteer-scrape`. The server will start on port 3000.
 
 The service provides a POST endpoint at `/scrape` that accepts a JSON body with a `url` field. The `url` should be the page you want to scrape.
 
