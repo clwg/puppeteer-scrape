@@ -18,7 +18,7 @@ app.post('/detailed_scrape', async (req, res) => {
 
   try {
     const browser = await puppeteer.launch({
-      headless: true,
+      headless: "new",
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
 
@@ -39,8 +39,6 @@ app.post('/detailed_scrape', async (req, res) => {
     const networkMap = analyzeNetworkRelationships(harData);
     const headersInfo = analyzeResponseHeaders(harData);
     const performanceMetrics = summarizePerformance(harData);
-
-    
 
     const responseData = {
       networkMap,
@@ -84,13 +82,11 @@ app.post('/simple_scrape', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+
 
 function analyzeNetworkRelationships(harData) {
     const networkMap = [];
-  
+
     if (harData.log && Array.isArray(harData.log.entries)) {
       harData.log.entries.forEach(entry => {
         const url = new URL(entry.request.url);
@@ -105,7 +101,7 @@ function analyzeNetworkRelationships(harData) {
         });
       });
     }
-  
+
     return networkMap;
 }
 
@@ -131,7 +127,6 @@ function analyzeResponseHeaders(harData) {
     return headersInfo;
 }
 
-
 function summarizePerformance(harData) {
     const performanceMetrics = {
       totalLoadTime: 0,
@@ -143,26 +138,26 @@ function summarizePerformance(harData) {
         other: 0
       }
     };
-  
+
     if (harData.log && Array.isArray(harData.log.entries)) {
       let firstRequestTime = null;
-  
+
       harData.log.entries.forEach(entry => {
         const startTime = new Date(entry.startedDateTime).getTime();
         const endTime = startTime + entry.time;
-  
+
         if (endTime > performanceMetrics.totalLoadTime) {
           performanceMetrics.totalLoadTime = endTime;
         }
-  
+
         if (firstRequestTime === null || startTime < firstRequestTime) {
           firstRequestTime = startTime;
           performanceMetrics.timeToFirstByte = entry.timings.wait;
         }
-  
+
         const mimeType = entry.response.content.mimeType;
         const size = entry.response.bodySize;
-  
+
         if (mimeType.includes('image')) {
           performanceMetrics.resourceSizes.images += size;
         } else if (mimeType.includes('javascript')) {
@@ -173,13 +168,23 @@ function summarizePerformance(harData) {
           performanceMetrics.resourceSizes.other += size;
         }
       });
-  
+
       if (firstRequestTime !== null) {
         performanceMetrics.totalLoadTime -= firstRequestTime;
       }
     }
-  
+
     return performanceMetrics;
 }
 
+const server = app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
+process.on('SIGINT', () => {
+  console.log('Gracefully shutting down...');
+  server.close(() => {
+    console.log('Server closed');
+    process.exit(0);
+  });
+});
