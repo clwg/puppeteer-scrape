@@ -1,9 +1,9 @@
 # puppeteer-scrape
 
-This is a headless web scraping service built with Node.js, Express, and Puppeteer. It provides an API endpoint to scrape a given URL and analyze the network relationships, response headers, and performance metrics of the page as well as the base64 content of the page.
+A headless web scraping service built with Node.js and Puppeteer. It provides an API endpoint to scrape a given URL and analyze the network communication, response headers, and performance metrics of the page as well as the base64 content of the page.
 
 ## Installation
-
+Building the project from scratch can take a long time, take it as an opportunity to get a coffee
 1. Clone the repository.
 2. Run `docker build -t puppeteer-scrape . ` to build the docker file.
 
